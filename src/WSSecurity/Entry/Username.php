@@ -11,6 +11,7 @@ final class Username implements WsseEntry
     private string $userName;
     private ?string $password = null;
     private bool $digest = false;
+    private bool $digestExt = false;
 
     public function __construct(string $userName)
     {
@@ -32,13 +33,24 @@ final class Username implements WsseEntry
 
         return $new;
     }
+    public function withDigestExt(bool $digestExt): self
+    {
+        $new = clone $this;
+        if ($digestExt) {
+            $this->digest = true;
+        }
+        $new->digestExt = $digestExt;
+
+        return $new;
+    }
 
     public function __invoke(Document $envelope, WSSESoap $wsse): void
     {
         $wsse->addUserToken(
             $this->userName,
             $this->password,
-            $this->digest
+            $this->digest,
+            $this->digestExt
         );
     }
 }
