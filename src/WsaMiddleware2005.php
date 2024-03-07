@@ -14,9 +14,9 @@ final class WsaMiddleware2005 implements Plugin
 {
     const WSA_ADDRESS2005_ANONYMOUS = 'http://www.w3.org/2005/08/addressing/anonymous';
 
-    private string $address;
+    private ?string $address;
 
-    public function __construct(string $address = self::WSA_ADDRESS2005_ANONYMOUS)
+    public function __construct(?string $address = self::WSA_ADDRESS2005_ANONYMOUS)
     {
         $this->address = $address;
     }
@@ -31,7 +31,9 @@ final class WsaMiddleware2005 implements Plugin
                     $wsa->addAction(SoapActionDetector::detectFromRequest($request));
                     $wsa->addTo((string) $request->getUri());
                     $wsa->addMessageID();
-                    $wsa->addReplyTo($this->address);
+                    if ($this->address !== null) {
+                        $wsa->addReplyTo($this->address);
+                    }
                 }
             )
         );
